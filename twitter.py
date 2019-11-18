@@ -20,13 +20,11 @@ final_tweets = {}
 def getData():
 	temp_list = set()
 	temp_dict = {}
-	for tweet in tweepy.Cursor(API.search, q = teams[0], result_type = "recent").items(100):
+	for tweet in tweepy.Cursor(API.search, q = teams[0], result_type = "recent", tweet_mode = 'extended').items(100):
 		#print(tweet.text)
 		#print(tweet.place)
-		if(tweet.place == None):
-			continue
-		else:
-			temp_dict[tweet.id] = {'tweet_id': tweet.id, 'text' : tweet.text, 'location' : tweet.place.full_name, 'coordinates' : tweet.place.bounding_box.coordinates}
+		if(tweet.place != None):
+			temp_dict[tweet.id] = {'tweet_id': tweet.id, 'text' : tweet.full_text, 'location' : tweet.place.full_name, 'coordinates' : tweet.place.bounding_box.coordinates}
 			#print(tweet.id)
 			#print(tweet.text)
 			#print(tweet.place)
@@ -39,7 +37,7 @@ def main():
 		temp_dict = getData()
 		current_cnt += len(temp_dict)
 		final_tweets.update(temp_dict)
-
+	print(current_cnt)
 	print(final_tweets)			
 
 main()
