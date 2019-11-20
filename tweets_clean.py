@@ -22,6 +22,7 @@ def dict_to_json(this_dict,name):
 		
 def refine(name):
 	with open(name) as data_file:    
+		print(name)
 		data = json.load(data_file)
 		print(data)
 	for keys in data:
