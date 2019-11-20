@@ -37,7 +37,7 @@ def get_data():
 			temp_dict[tweet.id] = {'tweet_id': tweet.id, 'text' : tweet.full_text, 'location' : tweet.place.full_name, 'coordinates' : tweet.place.bounding_box.coordinates}
 			#print(tweet.id)
 			#print(tweet.text)
-			#print(tweet.place)
+			print(tweet.created_at)
 			
 	return temp_dict #temp_list
 			
@@ -52,7 +52,7 @@ def main():
 	#json_tweets = json.dumps(final_tweets)
 	#print(json_tweets)
 	ts = get_ts()
-	json_file = 'tweets_' + str(ts) + '.json'
+	json_file ='files/' +'tweets_' + str(ts) + '.json'
 	with open(json_file, 'w') as outfile:
     		json.dump(final_tweets, outfile, sort_keys=True, indent=4)
 	
