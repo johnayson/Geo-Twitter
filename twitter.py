@@ -14,7 +14,7 @@ ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-teams = ['#NFL']
+teams = ['#NBA']
 tweets_count = 5
 
 def get_ts():
@@ -32,7 +32,7 @@ def get_data():
 	temp_dict = {}
 	#created last hour
 	
-	for tweet in tweepy.Cursor(API.search, q = teams[0], result_type = "recent", tweet_mode = 'extended').items(100):
+	for tweet in tweepy.Cursor(API.search, q = teams[0], result_type = "recent", tweet_mode = 'extended').items(1000):
 		#print(tweet.text)
 		#print(tweet.place)
 		time_lapse = datetime.datetime.utcnow() - tweet.created_at
