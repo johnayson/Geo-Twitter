@@ -52,8 +52,8 @@ def create_project(conn, project):
     return cur.lastrowid
 
 def insert_tweets(conn,row):
-    sql = """ INSERT INTO `geo_tweets`(tweet_id, text, created_at, location, coordinates)
-              VALUES(?,?,?,?,?) """ 
+    sql = """ INSERT INTO `geo_tweets`(tweet_id, text, created_at, location, coordinate_x, coordinate_y)
+              VALUES(?,?,?,?,?,?) """ 
     cur = conn.cursor()
     cur.execute(sql,row)
     conn.commit()
@@ -80,7 +80,8 @@ def main():
                                         text text NOT NULL,
                                         created_at text NOT NULL,
                                         location text NOT NULL,
-                                        coordinates blob NOT NULL
+                                        coordinate_x DECIMAL(3,8) NOT NULL,
+					coordinate_y DECIMAL(3,8) NOT NULL
                                     ); """
  
  
@@ -97,15 +98,15 @@ def main():
                 data = json.load(data_file)
             for key in data:
                 print(key)
-                tweet = ( data[key]['tweet_id'] ,data[key]['text'] , data[key]['created_at'] , data[key]['location'], 'xxx')
+                tweet = ( data[key]['tweet_id'] ,data[key]['text'] , data[key]['created_at'] , data[key]['location'], data[key]['coordinate_x'], data[key]['coordinate_y'])
                 print(tweet)
                 x = insert_tweets(conn,tweet)
             mv_cmd = 'mv ' + file + ' ' + file + '.done'
             os.system(mv_cmd)
         
  
-        # create tweets table
-        #create_table(conn, sql_create_tweets_table)
+        #create tweets table
+        create_table(conn, sql_create_tweets_table)
  
         # create tasks table
         #create_table(conn, sql_create_tasks_table)

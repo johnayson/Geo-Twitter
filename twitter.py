@@ -24,6 +24,10 @@ def timestamp_date(ts):
 	ts = ts/1000
 	return datetime.datetime.fromtimestamp(ts)	
 
+def midpoint(p1, p2):
+    x = (p1[0]+p2[0])/2
+    y =  (p1[1]+p2[1])/2
+    return [x,y]
 # Create API object
 API = tweepy.API(auth)
 final_tweets = {}
@@ -38,11 +42,20 @@ def get_data():
 		time_lapse = datetime.datetime.utcnow() - tweet.created_at
 		#has place and created last hour
 		if(tweet.place != None and time_lapse < datetime.timedelta(minutes=60) ):
-			temp_dict[tweet.id] = {'tweet_id': tweet.id, 'text' : tweet.full_text, 'location' : tweet.place.full_name, 'created_at' : tweet.created_at,'coordinates' : tweet.place.bounding_box.coordinates}
+			point_1 = tweet.place.bounding_box.coordinates[0][0]
+			point_2 = tweet.place.bounding_box.coordinates[0][2]
+			center = midpoint(point_1,point_2)
+			temp_dict[tweet.id] = {'tweet_id': tweet.id, 'text' : tweet.full_text, 'location' : tweet.place.full_name, 'created_at' : tweet.created_at,'coordinate_x' : center[0], 'coordinate_y': center[1]}
 			#print(tweet.id)
 			#print(tweet.text)
+			print(tweet.place)
 			print(tweet.created_at)
-			print(tweet)
+			#point_1 = tweet.place.bounding_box.coordinates[0][0]
+			#point_2 = tweet.place.bounding_box.coordinates[0][2]
+			#center = midpoint(point_1,point_2)
+			#print(center)
+			#print(tweet.coordinates[0])
+			#print(tweet.coordinates[0][2])
 			
 	return temp_dict #temp_list
 			
