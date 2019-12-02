@@ -9,6 +9,10 @@ from pathlib import Path
 
 #raw_tweets = tweets.final_tweets
 #Data Cleanup
+with open('/Users/~/Desktop/projects/data_eng/geo_twitter/config/config.json') as data_file:
+                data = json.load(data_file)
+#print(data)
+
 def clean_tweets(text):
 	#remove emojis
 	text = text.encode('ascii','ignore').decode('ascii')
@@ -31,6 +35,7 @@ def refine(name):
 	dict_to_json(data,os.path.basename(name))
 	return True
 
+os.chdir(data['TWITTER_DIR'])
 path = Path('files/')
 x = list(path.rglob('*.json'))
 print(x)

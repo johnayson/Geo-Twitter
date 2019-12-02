@@ -5,16 +5,26 @@ import time
 import datetime
 
 
-CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
-CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET') 
-ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN')
-ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET') 
+with open('/Users/~/Desktop/projects/data_eng/geo_twitter/config/config.json') as data_file:
+                data = json.load(data_file)
+print(data)
+
+CONSUMER_KEY = data['TWITTER_CONSUMER_KEY']
+CONSUMER_SECRET = data['TWITTER_CONSUMER_SECRET']
+ACCESS_TOKEN = data['TWITTER_ACCESS_TOKEN']
+ACCESS_TOKEN_SECRET = data['TWITTER_ACCESS_TOKEN_SECRET']
+
+#Token save in the environment
+#CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
+#CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET') 
+#ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN')
+#ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET') 
 
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-teams = ['#NBA']
+teams = ['#NFL']
 tweets_count = 5
 
 def get_ts():
@@ -48,8 +58,8 @@ def get_data():
 			temp_dict[tweet.id] = {'tweet_id': tweet.id, 'text' : tweet.full_text, 'location' : tweet.place.full_name, 'created_at' : tweet.created_at,'coordinate_x' : center[0], 'coordinate_y': center[1]}
 			#print(tweet.id)
 			#print(tweet.text)
-			print(tweet.place)
-			print(tweet.created_at)
+			#print(tweet.place)
+			#print(tweet.created_at)
 			#point_1 = tweet.place.bounding_box.coordinates[0][0]
 			#point_2 = tweet.place.bounding_box.coordinates[0][2]
 			#center = midpoint(point_1,point_2)
@@ -67,11 +77,12 @@ def main():
 #		final_tweets.update(temp_dict)
 	temp_dict = get_data()
 	final_tweets.update(temp_dict)
-	print(current_cnt)
-	print(final_tweets)			
+	#print(current_cnt)
+	#print(final_tweets)			
 	#json_tweets = json.dumps(final_tweets)
 	#print(json_tweets)
 	ts = get_ts()
+	os.chdir(data['TWITTER_DIR'])
 	json_file ='files/' +'tweets_' + str(ts) + '.json'
 	with open(json_file, 'w') as outfile:
     		json.dump(final_tweets, outfile, sort_keys=True, indent=4,default = str)

@@ -4,7 +4,7 @@ import glob
 import json
 import os
 
- 
+
 def create_connection(db_file):
     """ create a database connection to the SQLite database
         specified by db_file
@@ -52,7 +52,7 @@ def create_project(conn, project):
     return cur.lastrowid
 
 def insert_tweets(conn,row):
-    sql = """ INSERT INTO `geo_tweets`(tweet_id, text, created_at, location, coordinate_x, coordinate_y)
+    sql = """ INSERT OR IGNORE INTO `geo_tweets`(tweet_id, text, created_at, location, coordinate_x, coordinate_y)
               VALUES(?,?,?,?,?,?) """ 
     cur = conn.cursor()
     cur.execute(sql,row)
@@ -73,6 +73,10 @@ def refine(name):
 
 
 def main():
+    with open('/Users/~/Desktop/projects/data_eng/geo_twitter/config/config.json') as data_file:
+          data = json.load(data_file)
+    print(data)
+    os.chdir(data['TWITTER_DIR'])
     database = "tweets.db" 
     #database = r"C:\sqlite\db\pythonsqlite.db"
     sql_create_tweets_table = """ CREATE TABLE IF NOT EXISTS geo_tweets (
