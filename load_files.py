@@ -52,8 +52,8 @@ def create_project(conn, project):
     return cur.lastrowid
 
 def insert_tweets(conn,row):
-    sql = """ INSERT OR IGNORE INTO `geo_tweets`(tweet_id, text, created_at, location, coordinate_x, coordinate_y)
-              VALUES(?,?,?,?,?,?) """ 
+    sql = """ INSERT OR IGNORE INTO `geo_tweets`(tweet_id, hash, text, created_at, location, coordinate_x, coordinate_y)
+              VALUES(?,?,?,?,?,?,?) """ 
     cur = conn.cursor()
     cur.execute(sql,row)
     conn.commit()
@@ -81,6 +81,7 @@ def main():
     #database = r"C:\sqlite\db\pythonsqlite.db"
     sql_create_tweets_table = """ CREATE TABLE IF NOT EXISTS geo_tweets (
                                         tweet_id integer PRIMARY KEY,
+                                        hash text NOT NULL,
                                         text text NOT NULL,
                                         created_at text NOT NULL,
                                         location text NOT NULL,
@@ -102,7 +103,7 @@ def main():
                 data = json.load(data_file)
             for key in data:
                 print(key)
-                tweet = ( data[key]['tweet_id'] ,data[key]['text'] , data[key]['created_at'] , data[key]['location'], data[key]['coordinate_x'], data[key]['coordinate_y'])
+                tweet = ( data[key]['tweet_id'] ,data[key]['hash'],data[key]['text'] , data[key]['created_at'] , data[key]['location'], data[key]['coordinate_x'], data[key]['coordinate_y'])
                 print(tweet)
                 x = insert_tweets(conn,tweet)
             mv_cmd = 'mv ' + file + ' ' + file + '.done'

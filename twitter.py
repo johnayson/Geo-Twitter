@@ -14,17 +14,12 @@ CONSUMER_SECRET = data['TWITTER_CONSUMER_SECRET']
 ACCESS_TOKEN = data['TWITTER_ACCESS_TOKEN']
 ACCESS_TOKEN_SECRET = data['TWITTER_ACCESS_TOKEN_SECRET']
 
-#Token save in the environment
-#CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
-#CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET') 
-#ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN')
-#ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET') 
 
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-teams = ['#NFL']
+hashes = ['#NBA']
 tweets_count = 5
 
 def get_ts():
@@ -46,16 +41,18 @@ def get_data():
 	temp_dict = {}
 	#created last hour
 	
-	for tweet in tweepy.Cursor(API.search, q = teams[0], result_type = "recent", tweet_mode = 'extended').items(1000):
-		#print(tweet.text)
-		#print(tweet.place)
-		time_lapse = datetime.datetime.utcnow() - tweet.created_at
+	for hash in hashes:
+		print("call" + str(hash))
+		for tweet in tweepy.Cursor(API.search, q = hash, result_type = "recent", tweet_mode = 'extended').items(1000):
+			#print(tweet.place)
+			time_lapse = datetime.datetime.utcnow() - tweet.created_at
 		#has place and created last hour
-		if(tweet.place != None and time_lapse < datetime.timedelta(minutes=60) ):
-			point_1 = tweet.place.bounding_box.coordinates[0][0]
-			point_2 = tweet.place.bounding_box.coordinates[0][2]
-			center = midpoint(point_1,point_2)
-			temp_dict[tweet.id] = {'tweet_id': tweet.id, 'text' : tweet.full_text, 'location' : tweet.place.full_name, 'created_at' : tweet.created_at,'coordinate_x' : center[0], 'coordinate_y': center[1]}
+			if(tweet.place != None and time_lapse < datetime.timedelta(minutes=60) ):
+				point_1 = tweet.place.bounding_box.coordinates[0][0]
+				point_2 = tweet.place.bounding_box.coordinates[0][2]
+				center = midpoint(point_1,point_2)
+				temp_dict[tweet.id] = {'tweet_id': tweet.id, 'hash' : hash,  'text' : tweet.full_text, 'location' : tweet.place.full_name, 'created_at' : tweet.created_at,'coordinate_x' : center[0], 'coordinate_y': center[1]}
+				print(hash)
 			#print(tweet.id)
 			#print(tweet.text)
 			#print(tweet.place)

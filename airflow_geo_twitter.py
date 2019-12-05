@@ -21,7 +21,7 @@ print(data)
 #    return 'Hello world John!'
 
 dag = DAG('geo_twitter', description='DAG Schedule for Geo Twitter Ingestion.',
-          schedule_interval='1  * * * *',
+          schedule_interval='*/8  * * * *',
           start_date=datetime(2019, 11, 16), catchup=False)
 
 #dummy_operator = PythonOperator(task_id='dummy_task2', retries=1, dag=dag,python_callable=auto_fail )
