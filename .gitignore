@@ -2,3 +2,8 @@ config.env
 *.json
 *.done
 files/
+*.sh
+env.py
+Simple*
+*.txt
+
