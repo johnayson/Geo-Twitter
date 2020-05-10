@@ -25,14 +25,17 @@ tweets_count = 5
 def get_ts():
 	timestamp = int(time.time()*1000.0)
 	return timestamp
+
 def timestamp_date(ts):
 	ts = ts/1000
 	return datetime.datetime.fromtimestamp(ts)	
 
+#midpoint calculation to get the midpoint of the box
 def midpoint(p1, p2):
     x = (p1[0]+p2[0])/2
     y =  (p1[1]+p2[1])/2
     return [x,y]
+
 # Create API object
 API = tweepy.API(auth)
 final_tweets = {}
