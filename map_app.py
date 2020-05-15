@@ -16,6 +16,7 @@ def get_df():
     #print(df['coordinate_x'])
     return df
 
+#assigns colors to each unique hash in the dataframe
 def get_colors(df):
     unique_hashes_cnt = len(df[['hash']].drop_duplicates())
     unique_hashes = list(df['hash'].drop_duplicates())   #df.groupby(['hash'])))
@@ -25,7 +26,7 @@ def get_colors(df):
     
     #assign colors to each hash
     for i in range(unique_hashes_cnt):
-        colors_dict[unique_hashes[i]] ="rgb(" + str(random.randint(0,250)) + "," + str(random.randint(0,250)) + "," + str(random.randint(0,250))+ ")"
+        colors_dict[unique_hashes[i]] ="rgb(" + str(random.randint(0,230)+20) + "," + str(random.randint(0,250)) + "," + str(random.randint(0,250))+ ")"
        
     #print(unique_colors)
     #for i in range(unique_hashes_cnt):
@@ -42,8 +43,26 @@ def get_colors(df):
         
 
    #return 170 #[123,50,170]#random.randint(1,200)
+def build_trace(df,this_hash):
+    data = dict(
+        type = "scattermapbox",
+        showlegend = True,
+        legendgroup = "group4",
+        lat =df[(df['hash']==this_hash)] ['coordinate_y'],
+        lon = df[(df['hash']==this_hash)] ['coordinate_x'],
+        mode = "markers",
+        marker = dict(
+            size = 10,
+            color = get_colors(df[(df['hash']==this_hash)])
+        ),
+        text =  [["Location: {loc} <br /> Hash: {hash} <br /> Tweet: {text} ".format(loc=i,hash=j,text=k)] for i,j,k in zip(tweets_df[(tweets_df['hash']==this_hash)]['location'],tweets_df[(tweets_df['hash']==this_hash)]['hash'],tweets_df[(tweets_df['hash']== this_hash)]['text'])]
+     )
+    return data
+
 
 tweets_df = get_df()
+samp_json = build_trace(tweets_df,'#NHL')
+print(samp_json)
 colors_list = get_colors(tweets_df)
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -95,12 +114,52 @@ app.layout = html.Div(children=[
 	figure = {
            "data": [{
 	      "type": "scattermapbox",
-	      "lat": tweets_df['coordinate_y'], #["36.7505", "40.8296", "42.7484", "44.7069", "39.7527"],
-	      "lon": tweets_df['coordinate_x'],#["-73.9934", "-73.9262", "-73.9857", "-74.0113"],
+              "showlegend":True,"showscale":True,
+              "legendgroup":"group1",
+	      "lat": tweets_df[(tweets_df['hash']=='#NFL')] ['coordinate_y'],#tweets_df['coordinate_y'], #["36.7505", "40.8296", "42.7484", "44.7069", "39.7527"],
+	      "lon": tweets_df[(tweets_df['hash']=='#NFL') ] ['coordinate_x'],#tweets_df['coordinate_x'],#["-73.9934", "-73.9262", "-73.9857", "-74.0113"],
               "mode": "markers" ,
               #k ="".join( "x{i}".format(i = j) for j in range(0,random.randint(1,10)))
               #"symbol" : "square", x="".join("{:2d}".format(i) for i in range(0,random.randint(1,10)))
-              "marker" : {"size" : 10,"opacity" : 0.3, "color": colors_list},#"".join("rgb({color},0,0)".format(color =ret()))},
+              "marker" : {"size" : 10,"opacity" : 0.3, "color": get_colors(tweets_df[(tweets_df['hash']=='#NFL') ])},#colors_list},#"".join("rgb({color},0,0)".format(color =ret()))},
+              #"name": "xyz",
+              "color":"#fffefc",
+              "hoverinfo": "text",
+              #"text" : "Location: {loc} <bri>hash: {hash} ".format(loc=tweets_df['location'] , hash=tweets_df['hash'])
+              "text" : [["Location: {loc} <br /> Hash: {hash} <br /> Tweet: {text} ".format(loc=i,hash=j,text=k)] for i,j,k in zip(tweets_df[(tweets_df['hash']=='#NFL')] ['location'],tweets_df[(tweets_df['hash']=='#NFL')]['hash'],tweets_df[(tweets_df['hash']=='#NFL')]['text'])],
+              #"hovertext": [["Name: {} <br>Type: {} <br>Provider: {}".format(i,j,k)]
+              #                  for i,j,k in zip("a","b","c")],
+	    },
+           { 
+              "type": "scattermapbox",
+              "showlegend":True,"showscale":True,
+              "legendgroup":"group2",
+              "lat": tweets_df[(tweets_df['hash']=='#MLB') ] ['coordinate_y'],#tweets_df['coordinate_y'], #["36.7505", "40.8296", "42.7484", "44.7069", "39.7527"],
+              "lon": tweets_df[(tweets_df['hash']=='#MLB') ] ['coordinate_x'],#tweets_df['coordinate_x'],#["-73.9934", "-73.9262", "-73.9857", "-74.0113"],    
+              "mode": "markers" ,
+              #k ="".join( "x{i}".format(i = j) for j in range(0,random.randint(1,10)))
+              #"symbol" : "square", x="".join("{:2d}".format(i) for i in range(0,random.randint(1,10)))
+              "marker" : {"size" : 10,"opacity" : 0.3, "color": get_colors(tweets_df[(tweets_df['hash']=='#MLB') ])},#colors_list},#"".join("rgb({color},0,0)".format(color =ret()))},
+              #"name": "xyz",
+              "color":"#fffefc",
+              "hoverinfo": "text",
+              #"text" : "Location: {loc} <bri>hash: {hash} ".format(loc=tweets_df['location'] , hash=tweets_df['hash'])
+              "text" : [["Location: {loc} <br /> Hash: {hash} <br /> Tweet: {text} ".format(loc=i,hash=j,text=k)] for i,j,k in zip(tweets_df[(tweets_df['hash']=='#MLB')]['location'],tweets_df[(tweets_df['hash']=='#MLB')]['hash'],tweets_df[(tweets_df['hash']=='#MLB')]['text'])],
+              #"hovertext": [["Name: {} <br>Type: {} <br>Provider: {}".format(i,j,k)]
+              #                  for i,j,k in zip("a","b","c")],
+            },
+
+          {
+              "type": "scattermapbox",
+              "showlegend":True,"showscale":True,
+              "legendgroup":"group3",
+              "name": ["turtles","first legend group - average"],
+              "lat": ["36.7505", "40.8296", "42.7484", "44.7069", "39.7527"],
+              "lon": ["-73.9934", "-73.9262", "-73.9857", "-74.0113"],
+              "mode": "markers" ,
+              #k ="".join( "x{i}".format(i = j) for j in range(0,random.randint(1,10)))
+              #"symbol" : "square", x="".join("{:2d}".format(i) for i in range(0,random.randint(1,10)))
+              "marker" : {"size" : 30,"opacity" : 0.3, "color": colors_list},#"".join("rgb({color},0,0)".format(color =ret()))},
               #"name": "xyz",
               "color":"#fffefc",
               "hoverinfo": "text",
@@ -108,13 +167,26 @@ app.layout = html.Div(children=[
               "text" : [["Location: {loc} <br /> Hash: {hash} <br /> Tweet: {text} ".format(loc=i,hash=j,text=k)] for i,j,k in zip(tweets_df['location'],tweets_df['hash'],tweets_df['text'])],
               #"hovertext": [["Name: {} <br>Type: {} <br>Provider: {}".format(i,j,k)]
               #                  for i,j,k in zip("a","b","c")],
-	    }],
-            'layout': {"mapbox" :{"style":"open-street-map" } }#layout_map,
+            },samp_json
+
+
+	    ],
+            'layout': {
+		"mapbox" :{
+			"style":"open-street-map",
+			"zoom":1,
+			"legend": {"font": {"size":30},"orientation": "h"} 
+			},
+		#"center": {"lat":40.4637 , "lon":3.7492},
+		"height":600,
+		"autosize" : True,
+		
+		}#layout_map,
 
             
         }
     )
 ])
-
+print(tweets_df[(tweets_df['hash']=='#NBA') ] ['coordinate_y'])
 if __name__ == '__main__':
     app.run_server(debug=True)

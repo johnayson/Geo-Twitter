@@ -19,7 +19,7 @@ ACCESS_TOKEN_SECRET = data['TWITTER_ACCESS_TOKEN_SECRET']
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-hashes = ['#NBA']
+hashes = ['#NHL']
 tweets_count = 5
 
 def get_ts():
