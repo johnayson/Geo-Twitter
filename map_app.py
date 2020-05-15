@@ -167,7 +167,8 @@ app.layout = html.Div(children=[
               "text" : [["Location: {loc} <br /> Hash: {hash} <br /> Tweet: {text} ".format(loc=i,hash=j,text=k)] for i,j,k in zip(tweets_df['location'],tweets_df['hash'],tweets_df['text'])],
               #"hovertext": [["Name: {} <br>Type: {} <br>Provider: {}".format(i,j,k)]
               #                  for i,j,k in zip("a","b","c")],
-            },samp_json
+            },
+            samp_json
 
 
 	    ],
