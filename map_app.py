@@ -6,14 +6,14 @@ import dash_html_components as html
 import pandas as pd
 import sqlite3
 import random
+import datetime
+
 
 
 def get_df():
     # Create your connection.
     cnx = sqlite3.connect('tweets.db')
-
-    df = pd.read_sql_query("SELECT * FROM geo_tweets  where date(created_at) > date ('2020-05-10') ", cnx)
-    #print(df['coordinate_x'])
+    df = pd.read_sql_query("SELECT * FROM geo_tweets  where date(created_at) > DATE('now','-7 day') ", cnx)
     return df
 def get_unique_hashes(df):
     hashes_list = list(df['hash'].drop_duplicates())
@@ -26,24 +26,18 @@ def get_colors(df):
     #unique_colors = []
     colors_dict = {}
     final_colors = []
-    
+
     #assign colors to each hash
     for i in range(unique_hashes_cnt):
         colors_dict[unique_hashes[i]] ="rgb(" + str(random.randint(0,230)+20) + "," + str(random.randint(0,250)) + "," + str(random.randint(0,250))+ ")"
-       
-    #print(unique_colors)
-    #for i in range(unique_hashes_cnt):
-    #    colors_dict[unique_hashes[i]] = unique_colors[i]
-    print(colors_dict)
     #put colors in dictionary, key value
 
-    for  index, row in df.iterrows(): 
+    for  index, row in df.iterrows():
         final_colors.append(colors_dict[row['hash']])
-    print(final_colors)
-    
-    return final_colors  
+
+    return final_colors
       #for each position in the list just get the value/color for given hash
-        
+
 
    #return 170 #[123,50,170]#random.randint(1,200)
 def build_trace(df,this_hash):
@@ -60,21 +54,14 @@ def build_trace(df,this_hash):
             color = get_colors(df[(df['hash']==this_hash)])
         ),
         hoverinfo = "text",
-        text =  [["Location: {loc} <br /> Hash: {hash} <br /> Tweet: {text} ".format(loc=i,hash=j,text=k)] for i,j,k in zip(tweets_df[(tweets_df['hash']==this_hash)]['location'],tweets_df[(tweets_df['hash']==this_hash)]['hash'],tweets_df[(tweets_df['hash']== this_hash)]['text'])]
+        text =  [["Location: {loc} <br /> Hash: {hash} <br /> Tweet: {text} ".format(loc=i,hash=j,text=k)]
+            for i,j,k in zip(tweets_df[(tweets_df['hash']==this_hash)]['location'],tweets_df[(tweets_df['hash']==this_hash)]['hash'],
+                tweets_df[(tweets_df['hash']== this_hash)]['text'])]
      )
     return data
 
 
 tweets_df = get_df()
-samp_json = build_trace(tweets_df,'#NHL')
-hash_list=get_unique_hashes(tweets_df)
-print(hash_list)
-final_list = []
-for hash in hash_list:
-	trace = build_trace(tweets_df,hash)
-	final_list.append(trace)
-print(samp_json)
-colors_list = get_colors(tweets_df)
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -102,44 +89,70 @@ layout_map = dict(
     ),
     legend=dict(font=dict(size=30), orientation='h'),
     title='Tweets around the world',
-    #style="open-street-map"
     mapbox=dict(
-        #accesstoken=mapbox_access_token,
         style="open-street-map"
-        #legend=dict(font=dict(size=30), orientation='h')
-        #center=dict(
-        #    lon=-73.91251,
-        #    lat=40.7342
-        #),
-        #zoom=10
     )
 )
+def serve_layout():
+    return html.H1('The time is: ' + str(datetime.datetime.now()))
+def start():
+    tweets_df = get_df()
+    hash_list=get_unique_hashes(tweets_df)
+    final_list = []
+    print(len(tweets_df))
+    for hash in hash_list:
+    	trace = build_trace(tweets_df,hash)
+    	final_list.append(trace)
+    html_obj = html.Div(children=[
+        html.H1(children='Geo-twitter for Major Professional Sports' + str(datetime.datetime.now())),
+        html.H2(children='Geo-twitter' + str(len(tweets_df))),
+        html.Div(children='As of ' + str(datetime.datetime.now())),
+        dcc.Graph(id='map-graph',
+    	figure = {
+    		"data" : final_list,
+            "layout": {
+    			"mapbox" :{
+    				"style":"open-street-map",
+    				"zoom":1,
+    				"legend": {"font": {"size":30},"orientation": "h"}
+    		},
+    		#"center": {"lat":40.4637 , "lon":3.7492},
+    		"height":600,
+    		"autosize" : True
 
-app.layout = html.Div(children=[
-    html.H1(children='Geo-twitter for Major Professional Sports'),
+    		}
 
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-    dcc.Graph(id='map-graph',
-	figure = { 
-		"data" : final_list,
-        "layout": {
-			"mapbox" :{
-				"style":"open-street-map",
-				"zoom":1,
-				"legend": {"font": {"size":30},"orientation": "h"} 
-		},
-		#"center": {"lat":40.4637 , "lon":3.7492},
-		"height":600,
-		"autosize" : True
-		
-		}
 
-            
-         }
-     )
- ])
-#print(tweets_df[(tweets_df['hash']=='#NBA') ] ['coordinate_y'])
+             }
+         )
+     ])
+    return html_obj
+
+app.layout = start
+# app.layout = html.Div(children=[
+#     html.H1(children='Geo-twitter for Major Professional Sports' + str(datetime.datetime.now())),
+#
+#     html.Div(children='As of ' + str(datetime.datetime.now())),
+#     dcc.Graph(id='map-graph',
+# 	figure = {
+# 		"data" : final_list,
+#         "layout": {
+# 			"mapbox" :{
+# 				"style":"open-street-map",
+# 				"zoom":1,
+# 				"legend": {"font": {"size":30},"orientation": "h"}
+# 		},
+# 		#"center": {"lat":40.4637 , "lon":3.7492},
+# 		"height":600,
+# 		"autosize" : True
+#
+# 		}
+#
+#
+#          }
+#      )
+#  ])
+
+
 if __name__ == '__main__':
     app.run_server(debug=True)
