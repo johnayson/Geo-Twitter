@@ -21,7 +21,7 @@ print(data)
 #    return 'Hello world John!'
 
 dag = DAG('geo_twitter', description='DAG Schedule for Geo Twitter Ingestion.',
-          schedule_interval='*/8  * * * *',
+          schedule_interval='*/15  * * * *',
           start_date=datetime(2019, 11, 16), catchup=False)
 
 #dummy_operator = PythonOperator(task_id='dummy_task2', retries=1, dag=dag,python_callable=auto_fail )
@@ -39,4 +39,8 @@ task_2 = BashOperator(task_id = 'raw_clean', bash_command = 'python {{params.TWI
 
 task_3 = BashOperator(task_id = 'data_load', bash_command = 'python {{params.TWITTER_DIR}}/load_files.py',params = data, dag = dag)
 
+task_2_1 = BashOperator(task_id = 'publish_kafka', bash_command = 'python {{params.TWITTER_DIR}}/kafka_publish.py', params = data, dag = dag)
+
+#task_2_1.set_upstream(task_1)
+task_1 >> task_2_1
 task_1 >> task_2 >> task_3
