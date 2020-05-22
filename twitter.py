@@ -19,8 +19,8 @@ ACCESS_TOKEN_SECRET = data['TWITTER_ACCESS_TOKEN_SECRET']
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-hashes = ['#MLB']
-tweets_count = 5
+hashes = ['#MLB','#NBA','#NFL','#NHL']
+#tweets_count = 5
 
 def get_ts():
 	timestamp = int(time.time()*1000.0)
@@ -46,7 +46,7 @@ def get_data():
 	
 	for hash in hashes:
 		print("call" + str(hash))
-		for tweet in tweepy.Cursor(API.search, q = hash, result_type = "recent", tweet_mode = 'extended').items(1000):
+		for tweet in tweepy.Cursor(API.search, q = hash, result_type = "recent", tweet_mode = 'extended',wait_on_rate_limit=True).items(1000):
 			#print(tweet.place)
 			time_lapse = datetime.datetime.utcnow() - tweet.created_at
 		#has place and created last hour
