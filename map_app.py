@@ -33,7 +33,7 @@ def get_colors(df):
 
     #assign colors to each hash
     for i in range(unique_hashes_cnt):
-        colors_dict[unique_hashes[i]] ="rgb(" + str(random.randint(0,230)+20) + "," + str(random.randint(0,250)) + "," + str(random.randint(0,250))+ ")"
+        colors_dict[unique_hashes[i]] ="rgb(" + str(random.randint(0,230)/(i+1)) + "," + str(random.randint(0,250)) + "," + str(random.randint(0,250))+ ")"
     #put colors in dictionary, key value
 
     for  index, row in df.iterrows():
