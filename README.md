@@ -1,5 +1,5 @@
 # Geo-Twitter
-Geographical location of desired hashtags tweets. (Python,Java,Airflow,Kafka) 
+Geographical location of desired hashtags tweets. (Python,Java,SQL,Airflow,Kafka) 
 
 Design:
 
