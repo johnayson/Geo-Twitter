@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#Data Visualization app of twitter data
+#Data Visualization app of Twitter data
 import dash
 import dash_core_components as dcc
 import dash_html_components as html

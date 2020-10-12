@@ -42,5 +42,8 @@ task_3 = BashOperator(task_id = 'data_load', bash_command = 'python {{params.TWI
 task_2_1 = BashOperator(task_id = 'publish_kafka', bash_command = 'python {{params.TWITTER_DIR}}/kafka_publish.py', params = data, dag = dag)
 
 #task_2_1.set_upstream(task_1)
-task_1 >> task_2_1
+#task_1 >> task_2_1
+#task_1 >> task_2 >> task_3
+
 task_1 >> task_2 >> task_3
+task_2 >> task_2_1
