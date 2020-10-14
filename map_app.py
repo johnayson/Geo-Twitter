@@ -13,7 +13,7 @@ from dash.exceptions import PreventUpdate
 
 
 
-
+#build dataframe from database
 def get_df():
     # Create your connection.
     cnx = sqlite3.connect('tweets.db')
