@@ -20,6 +20,7 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
 hashes = ['#MLB','#NBA','#NFL','#NHL']
+#hashes = ['#MLB']
 #tweets_count = 5
 
 def get_ts():
@@ -47,6 +48,7 @@ def get_data():
 	for hash in hashes:
 		print("call" + str(hash))
 		for tweet in tweepy.Cursor(API.search, q = hash, result_type = "recent", tweet_mode = 'extended',wait_on_rate_limit=True).items(1000):
+			#print("Fetching...")
 			#print(tweet.place)
 			time_lapse = datetime.datetime.utcnow() - tweet.created_at
 		#has place and created last hour
@@ -56,31 +58,13 @@ def get_data():
 				center = midpoint(point_1,point_2)
 				temp_dict[tweet.id] = {'tweet_id': tweet.id, 'hash' : hash,  'text' : tweet.full_text, 'location' : tweet.place.full_name, 'created_at' : tweet.created_at,'coordinate_x' : center[0], 'coordinate_y': center[1]}
 				print(hash)
-			#print(tweet.id)
-			#print(tweet.text)
-			#print(tweet.place)
-			#print(tweet.created_at)
-			#point_1 = tweet.place.bounding_box.coordinates[0][0]
-			#point_2 = tweet.place.bounding_box.coordinates[0][2]
-			#center = midpoint(point_1,point_2)
-			#print(center)
-			#print(tweet.coordinates[0])
-			#print(tweet.coordinates[0][2])
 			
 	return temp_dict #temp_list
 			
 def main():
 	current_cnt = 0
-#	while( current_cnt < tweets_count):
-#		temp_dict = get_data()
-#		current_cnt += len(temp_dict)
-#		final_tweets.update(temp_dict)
 	temp_dict = get_data()
 	final_tweets.update(temp_dict)
-	#print(current_cnt)
-	#print(final_tweets)			
-	#json_tweets = json.dumps(final_tweets)
-	#print(json_tweets)
 	ts = get_ts()
 	os.chdir(data['TWITTER_DIR'])
 	json_file ='files/' +'tweets_' + str(ts) + '.json'

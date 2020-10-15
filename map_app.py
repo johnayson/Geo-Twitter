@@ -107,11 +107,6 @@ def serve_layout():
         ])
     return init_layout
 # Multiple components can update everytime interval gets fired., n is used for interval
-#if just figure 'map-graph'(id),figure
-#updates the id comp with a new the return component
-# @app.callback(Output('comp','children'),
-#               [Input('interval-component', 'n_intervals')])
-
 #Live update based on interval refresh
 @app.callback(Output('map-graph','figure'),
               [Input('interval-component', 'n_intervals')])
